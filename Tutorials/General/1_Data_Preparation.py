@@ -1,14 +1,14 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[354]:
 
 
 from jupyterthemes import jtplot 
 jtplot.style(theme='solarizedd')
 
 
-# In[3]:
+# In[355]:
 
 
 import os
@@ -27,13 +27,13 @@ def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
     housing_tgz.close()
 
 
-# In[4]:
+# In[356]:
 
 
 fetch_housing_data()
 
 
-# In[5]:
+# In[357]:
 
 
 import pandas as pd
@@ -42,38 +42,38 @@ def	load_housing_data(housing_path=HOUSING_PATH):
     return pd.read_csv(csv_path)
 
 
-# In[6]:
+# In[358]:
 
 
 load_housing_data()
 
 
-# In[7]:
+# In[359]:
 
 
 housing = load_housing_data()
 housing.head()
 
 
-# In[8]:
+# In[360]:
 
 
 housing.info()
 
 
-# In[9]:
+# In[361]:
 
 
 housing["ocean_proximity"].value_counts()
 
 
-# In[10]:
+# In[362]:
 
 
 housing.describe()
 
 
-# In[11]:
+# In[363]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -82,7 +82,7 @@ housing.hist(bins=50, figsize=(20, 15))
 plt.show()
 
 
-# In[12]:
+# In[364]:
 
 
 # Simple split into test/train by random permutation (does not persist beyond dataset updates).
@@ -98,14 +98,7 @@ train_set, test_set = split_train_test(housing, 0.2)
 print(len(train_set), "train +", len(test_set), "test")
 
 
-# In[13]:
-
-
-train_set, test_set = split_train_test(housing, 0.2)
-print(len(train_set), "train +", len(test_set), "test")
-
-
-# In[14]:
+# In[366]:
 
 
 # Split into test/train by hash ID so that assignments persist beyond dataset updates
@@ -119,14 +112,14 @@ def split_train_test_by_id(data, test_ratio, id_column, hash=hashlib.md5):
     return data.loc[-in_test_set], data.loc[in_test_set]
 
 
-# In[15]:
+# In[367]:
 
 
 housing_with_id = housing.reset_index() # adds an 'index' column as the dataset does not have an ID
 train_set, test_set = split_train_test_by_id(housing_with_id, 0.2, "index")
 
 
-# In[16]:
+# In[368]:
 
 
 # If cannot guarantee that existing rows will not be deleted in the future, or
@@ -135,7 +128,7 @@ housing_with_id["id"]	=	housing["longitude"]	*	1000	+	housing["latitude"]
 train_set,	test_set	=	split_train_test_by_id(housing_with_id,	0.2,	"id")
 
 
-# In[17]:
+# In[369]:
 
 
 # Scikit-Learn's in-built function for dataset test/train splits
@@ -143,7 +136,7 @@ from sklearn.model_selection import train_test_split
 train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42)
 
 
-# In[18]:
+# In[370]:
 
 
 # Create an income_category for stratified sampling.
@@ -155,14 +148,14 @@ housing["income_cat"] = np.ceil(limit_cats)
 housing["income_cat"].where(housing["income_cat"] < 5, 5.0, inplace=True)
 
 
-# In[19]:
+# In[371]:
 
 
 housing["income_cat"].hist(bins=10, figsize=(4, 3))
 plt.show()
 
 
-# In[20]:
+# In[372]:
 
 
 # Now we can stratify based on income category using sklearn built-in
@@ -173,7 +166,7 @@ for train_index, test_index in split.split(housing, housing["income_cat"]):
     strat_test_set = housing.loc[test_index]
 
 
-# In[21]:
+# In[373]:
 
 
 # Check if stratifying worked as expected by checking the 
@@ -184,7 +177,7 @@ housing["income_cat"].value_counts() / len(housing)
 # the Random test set is skewed and not representative at all.
 
 
-# In[22]:
+# In[374]:
 
 
 # Remove the income_cat attribute so the data is back to its original state:
@@ -192,21 +185,21 @@ for set_ in (strat_train_set, strat_test_set):
     set_.drop("income_cat", axis=1, inplace=True)
 
 
-# In[23]:
+# In[375]:
 
 
 # Explore the data: put aside the test set by copying the training set
 housing = strat_train_set.copy()
 
 
-# In[24]:
+# In[376]:
 
 
 housing.plot(kind="scatter", x="longitude", y="latitude", color="lightblue")
 plt.show()
 
 
-# In[25]:
+# In[377]:
 
 
 # Use alpha=0.1 for easier identification of the high density areas.
@@ -214,7 +207,7 @@ housing.plot(kind="scatter", x="longitude", y="latitude", color="lightblue", alp
 plt.show()
 
 
-# In[26]:
+# In[378]:
 
 
 # The radius of each circle represents the district's population (arg s), and
@@ -232,7 +225,7 @@ plt.show()
 # - population density
 
 
-# In[27]:
+# In[379]:
 
 
 # Standard Correlation Coefficient (aka Pearson's R)
@@ -242,7 +235,7 @@ corr_matrix["median_house_value"].sort_values(ascending=False)
 # median_income = 0.69 (close to +1.0) means strong correlation with median_house_value
 
 
-# In[28]:
+# In[380]:
 
 
 # Correlation matrix to visually check for correlation shapes.
@@ -253,7 +246,7 @@ plt.show()
 # Other options (than histograms) are available for the main diagonal: see Pandas' docs)
 
 
-# In[29]:
+# In[381]:
 
 
 # median_income shows the most correlation with median_house_value
@@ -264,7 +257,7 @@ plt.show()
 # - Other horizontal lines at $350,000 and $450,000 for unknown reasons (should be investigated)
 
 
-# In[30]:
+# In[382]:
 
 
 # Combining attributes can increase information usefulness.
@@ -278,7 +271,7 @@ corr_matrix["median_house_value"].sort_values(ascending=False)
 # their components suggesting that their information is more useful.
 
 
-# In[31]:
+# In[383]:
 
 
 # Prepare the data for machine learning algorithms.
@@ -287,7 +280,7 @@ housing = strat_train_set.drop("median_house_value", axis=1)
 housing_labels = strat_train_set["median_house_value"].copy()
 
 
-# In[32]:
+# In[384]:
 
 
 # Data cleaning
@@ -300,7 +293,7 @@ housing["total_bedrooms"].fillna(median, inplace=True)
 # The computed median value must be used to also replace missing values in the test set (and new data).
 
 
-# In[33]:
+# In[385]:
 
 
 # Sklean provides a handy class to take care of missing values:
@@ -315,7 +308,7 @@ imputer.fit(housing_numerical)
 imputer.statistics_ # This is equivalent to "housing_numerical.median().values"
 
 
-# In[34]:
+# In[386]:
 
 
 # Transform the training set by replacing missing values by the learned medians.
@@ -325,7 +318,7 @@ X = imputer.transform(housing_numerical)
 housing_tr = pd.DataFrame(X, columns=housing_numerical.columns) 
 
 
-# In[35]:
+# In[387]:
 
 
 # Catergorical Attributes: convert text labels to numbers using sklearn LabelEncoder.
@@ -336,13 +329,13 @@ housing_cat_encoded = encoder.fit_transform(housing_cat)
 housing_cat_encoded
 
 
-# In[36]:
+# In[388]:
 
 
 print(encoder.classes_) # corresponding numerical mapping.
 
 
-# In[38]:
+# In[389]:
 
 
 # OneHotEncoder will assign a binary attribute to each category so as to 
@@ -354,13 +347,13 @@ housing_cat_1hot1 = encoder.fit_transform(housing_cat_encoded.reshape(-1,1))
 housing_cat_1hot1 # Integer categorical values converted into one-hot vectors (SciPy sparse matrix).
 
 
-# In[39]:
+# In[390]:
 
 
 housing_cat_1hot1.toarray() # Convert to a dense NumPy array (wasteful in memory).
 
 
-# In[41]:
+# In[391]:
 
 
 # LabelBinarizer converts from text cats to int cats, then int cats to one-hot vectos in one command.
@@ -373,13 +366,13 @@ housing_cat_1hot = encoder.fit_transform(housing_cat)
 housing_cat_1hot # Returns a dense NumPy array by default
 
 
-# In[42]:
+# In[392]:
 
 
 housing_cat_1hot1.toarray() == housing_cat_1hot
 
 
-# In[43]:
+# In[393]:
 
 
 encoder_sparse = LabelBinarizer(sparse_output=True)
@@ -387,7 +380,7 @@ housing_cat_1hot_sparse = encoder_sparse.fit_transform(housing_cat)
 housing_cat_1hot_sparse # Returns a sparse SciPy array
 
 
-# In[44]:
+# In[394]:
 
 
 # Custom Transformers
@@ -419,7 +412,7 @@ attr_adder = CombinedAttributesAdder(add_bedrooms_per_room = False)
 housing_extra_attribs = attr_adder.transform(housing.values)
 
 
-# In[45]:
+# In[395]:
 
 
 # Scaling/Standardizing features
@@ -430,7 +423,7 @@ housing_extra_attribs = attr_adder.transform(housing.values)
 #   - Much less affected by outliers than normalization.
 
 
-# In[46]:
+# In[396]:
 
 
 # Transformation Pipelines for sequencing/ordering transformations.
@@ -450,7 +443,7 @@ num_pipeline = Pipeline([
 housing_num_tr = num_pipeline.fit_transform(housing_numerical)
 
 
-# In[47]:
+# In[397]:
 
 
 # Since Scikir cannot handle Pandas DataFrames, a custom transformer is needed.
@@ -472,10 +465,25 @@ class DataFrameSelector(BaseEstimator, TransformerMixin):
             return X[self.attribute_names].values
 
 
-# In[48]:
+# In[398]:
 
 
 # (custom made since LabelBinarizer, used in the book, on X data is deprecated)
+class X_Binarizer(BaseEstimator, TransformerMixin):
+    def fit(self, X, y=None):
+        return self
+    def transform(self, X):          
+        t = np.transpose(X) # Avoids warning: "column-vector found where 1d array expected"
+        le = LabelEncoder().fit_transform(t[0])
+        oh = OneHotEncoder().fit_transform(le.reshape(-1,1))
+        return oh.toarray()
+# This doesn't work as the resulting array is 2 columns short (possibly as y data not being used?)
+
+
+# In[399]:
+
+
+# Fix found at stackexchange 
 class LabelBinarizerPipelineFriendly(LabelBinarizer):
     def fit(self, X, y=None):
         """this would allow us to fit the model based on the X input."""
@@ -486,7 +494,7 @@ class LabelBinarizerPipelineFriendly(LabelBinarizer):
         return super(LabelBinarizerPipelineFriendly, self).fit(X).transform(X)
 
 
-# In[49]:
+# In[400]:
 
 
 # DataFrameSelector examples: select numerical attributes only, or categorical attributes only.
@@ -502,11 +510,12 @@ cat_attribs = ["ocean_proximity"]
 cat_pipeline = Pipeline([
     ('selector', DataFrameSelector(cat_attribs)),
     ('label_binarizer_pipes', LabelBinarizerPipelineFriendly()),
+    #('x_binarizer', X_Binarizer()),
 ])
 # ('label_binarizer', LabelBinarizer()), this line (found in the book) is now deprecated
 
 
-# In[50]:
+# In[401]:
 
 
 # FeatureUnion
@@ -519,25 +528,25 @@ full_pipeline = FeatureUnion(transformer_list=[
 ])
 
 
-# In[51]:
+# In[402]:
 
 
 housing_prepared = full_pipeline.fit_transform(housing)
 
 
-# In[52]:
+# In[403]:
 
 
 housing_prepared
 
 
-# In[53]:
+# In[404]:
 
 
 housing_prepared.shape
 
 
-# In[54]:
+# In[405]:
 
 
 # Train a Model: Linear Regression
@@ -546,23 +555,35 @@ lin_reg = LinearRegression()
 lin_reg.fit(housing_prepared, housing_labels)
 
 
-# In[57]:
+# In[406]:
 
 
 # Try the model on some training instances
 some_data = housing.iloc[:5]
 some_labels = housing_labels.iloc[:5]
 some_data_prepared = full_pipeline.transform(some_data)
+some_data_prepared.shape
+some_data_prepared[0]
 
 
-# In[58]:
+# In[407]:
+
+
+# Try the model on some training instances
+some_data = housing.iloc[:5]
+some_labels = housing_labels.iloc[:5]
+some_data_prepared = full_pipeline.transform(some_data)
+some_data_prepared[0]
+
+
+# In[408]:
 
 
 print("Predictions:", lin_reg.predict(some_data_prepared))
 print("Labels:", list(some_labels))
 
 
-# In[59]:
+# In[409]:
 
 
 from sklearn.metrics import mean_squared_error
@@ -581,7 +602,7 @@ lin_rmse
 # - reduce model constraints (which in this case is not possible as linear regression is not regularized)
 
 
-# In[61]:
+# In[410]:
 
 
 # Regression Decision Tree
@@ -596,7 +617,7 @@ tree_rmse
 # The model has overfit (RMSE = 0), need to validate its test performance.
 
 
-# In[76]:
+# In[411]:
 
 
 # Evaluation Using Cross-Validation
@@ -611,7 +632,7 @@ scores = cross_val_score(tree_reg, housing_prepared, housing_labels,
 tree_rmse_scores = np.sqrt(-scores)
 
 
-# In[77]:
+# In[412]:
 
 
 def display_scores(scores):
@@ -620,14 +641,14 @@ def display_scores(scores):
     print("Standard deviation:", scores.std())
 
 
-# In[78]:
+# In[413]:
 
 
 display_scores(tree_rmse_scores)
 # As expected, test score = 71144 is higher than training score = 0.
 
 
-# In[79]:
+# In[414]:
 
 
 # Compute the scores for the previous linear regression example to compare to the decision tree scores.
@@ -638,7 +659,7 @@ display_scores(lin_rmse_scores)
 # Interestingly, it has performed better than decision trees that have overfit so badly.
 
 
-# In[82]:
+# In[415]:
 
 
 from sklearn.ensemble import RandomForestRegressor
@@ -650,7 +671,7 @@ forest_rmse = np.sqrt(forest_mse)
 forest_rmse
 
 
-# In[84]:
+# In[416]:
 
 
 forest_scores = cross_val_score(forest_reg, housing_prepared, housing_labels, 
@@ -660,7 +681,7 @@ display_scores(forest_rmse_scores)
 # Random forests have outperformed both previous models by far.
 
 
-# In[91]:
+# In[417]:
 
 
 # Save the model to save time in re-running later
@@ -670,7 +691,7 @@ my_model_loaded = joblib.load("my_model.pkl") # Load
 my_model_loaded
 
 
-# In[95]:
+# In[418]:
 
 
 # Grid Search
@@ -689,7 +710,7 @@ param_grid = [
 # - This may take a while.
 
 
-# In[96]:
+# In[419]:
 
 
 forest_reg = RandomForestRegressor()
@@ -698,7 +719,7 @@ grid_search = GridSearchCV(forest_reg, param_grid, cv=5,
 grid_search.fit(housing_prepared, housing_labels)
 
 
-# In[99]:
+# In[420]:
 
 
 # The result can be used to give the best combination of hyperparameter values.
@@ -707,7 +728,7 @@ grid_search.best_params_
 # therefore it would be a good idea to repeat the process with higher possible values.
 
 
-# In[100]:
+# In[421]:
 
 
 # The best estimator is available directly (which can be saved as a model to save time)
@@ -717,7 +738,7 @@ grid_search.best_estimator_
 # data will likely improve its performance.
 
 
-# In[102]:
+# In[422]:
 
 
 # Evaluation scores (RMSE) produced by each combination.
@@ -727,7 +748,7 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
 # The best params give the best RMSE = 49977
 
 
-# In[ ]:
+# In[423]:
 
 
 # Randomized Search
@@ -741,7 +762,7 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
 #   simply by setting the number of iterations.
 
 
-# In[103]:
+# In[424]:
 
 
 # Analyze the Best Models and Their Errors
@@ -749,7 +770,7 @@ feature_importances = grid_search.best_estimator_.feature_importances_
 feature_importances
 
 
-# In[104]:
+# In[425]:
 
 
 # Display these importance scores next to their corresponding attribute names
@@ -762,7 +783,7 @@ sorted(zip(feature_importances, attributes), reverse=True)
 # why it makes them and what could fix the problem (adding extra features or cleaning up outliers, etc.)
 
 
-# In[106]:
+# In[426]:
 
 
 # Evaluate on the Test Set
@@ -779,7 +800,7 @@ final_rmse
 # not generalize to new data.
 
 
-# In[107]:
+# In[427]:
 
 
 # Present your solution
